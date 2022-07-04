@@ -1,5 +1,5 @@
 {
-  "name": "attach-overlay-to-window",
+  "name": "overlay-helper",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/antholord/attach-overlay-to-window.git"
+    "url": "git+https://github.com/antholord/overlay-helper.git"
   },
   "author": "Anthony Lord",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/antholord/attach-overlay-to-window/issues"
+    "url": "https://github.com/antholord/overlay-helper/issues"
   },
-  "homepage": "https://github.com/antholord/attach-overlay-to-window#readme",
+  "homepage": "https://github.com/antholord/overlay-helper#readme",
   "devDependencies": {
     "@types/lodash": "^4.14.182",
     "@typescript-eslint/eslint-plugin": "^5.30.3",
