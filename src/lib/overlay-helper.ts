@@ -1,39 +1,58 @@
-import { BrowserWindow } from 'electron';
-import { windowManager } from "node-window-manager";
-import { IWindowWatcherClass, WindowWatcher, WindowWatcherOptions } from "./window-watcher";
-type AttachOptions = WindowWatcherOptions & { overlayWindow: BrowserWindow }
+import { BrowserWindow } from "electron";
+import { EventEmitter } from 'events';
+import { windowManager, Window } from 'node-window-manager';
+import { getWindow } from "./window.utils";
 
-let activeWindowChangedHandler: (isActive: boolean) => void = () => { };
-let activeWindowWatcher: IWindowWatcherClass | null = null;
+export type WindowEventEmitterOptions = {
+  windowName: string;
+}
 
-const attach = ({ overlayWindow, ...options }: AttachOptions) => {
+export declare interface OverlayHelper {
+  on(event: 'window-found', listener: (window: Window) => void): this
+  on(event: 'window-closed', listener: (window: Window) => void): this
+}
 
-  const activeWindowWatcher = WindowWatcher.watchWindow(options);
-  activeWindowChangedHandler = (isActive: boolean) => {
-    if (isActive) {
-      overlayWindow.show();
+export type AttachOverlayToWindowOptions = {
+  overlayWindow: BrowserWindow;
+  parentWindowTitle: string;
+  notifyWhenWindowStateChanges?: boolean;
+}
+
+export class OverlayHelper extends EventEmitter {
+
+  private lookForWindow(windowName: string, pollingInterval = 2000): void {
+    const intervalFn = setInterval(() => {
+      const window = getWindow(windowName);
+      if (window) {
+        this.emit('window-found', window);
+        clearInterval(intervalFn);
+      }
+    }, pollingInterval)
+  }
+
+  attachOverlayToWindow = ({ overlayWindow, parentWindowTitle, notifyWhenWindowStateChanges }: AttachOverlayToWindowOptions) => {
+    const windows = windowManager.getWindows();
+    const overlayDesktopWindow = windows.find(w => w.getTitle() == overlayWindow.getTitle());
+    const parentWindow = windows.find(w => w.getTitle() == parentWindowTitle);
+
+    if (parentWindow && overlayDesktopWindow) {
+      if (overlayDesktopWindow.getOwner() !== parentWindow) {
+        overlayDesktopWindow.setOwner(parentWindow);
+      }
     } else {
-      overlayWindow.hide();
+      console.error(`Could not find ${parentWindowTitle} or ${overlayDesktopWindow?.getTitle()}`);
+    }
+
+    if (notifyWhenWindowStateChanges) {
+      overlayWindow.on('close', (event: Electron.Event) => {
+        setTimeout(() => {
+          const parentWindow = getWindow(parentWindowTitle);
+          if (!parentWindow) {
+            this.emit('window-closed', parentWindow);
+            this.lookForWindow(parentWindowTitle);
+          }
+        }, 5000)
+      });
     }
   }
-  activeWindowWatcher.on('active-window-changed', activeWindowChangedHandler);
-};
-
-const detach = () => {
-  activeWindowWatcher?.off('active-window-changed', activeWindowChangedHandler);
-}
-
-const setOverlayAsChildWindow = (overlayWindowTitle: string, parentWindowTitle: string) => {
-  const windows = windowManager.getWindows();
-  const overlayWindow = windows.find(w => w.getTitle() == overlayWindowTitle)
-  const parentWindow = windows.find(w => w.getTitle() == parentWindowTitle)
-  if (parentWindow && overlayWindow) {
-    overlayWindow.setOwner(parentWindow);
-  } else {
-    console.error(`Could not find ${parentWindowTitle}` + ` or ${overlayWindowTitle}`);
-  }
-}
-
-export default {
-  attachOverlayToWindow: setOverlayAsChildWindow
 }

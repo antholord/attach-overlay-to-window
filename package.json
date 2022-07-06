@@ -1,21 +1,23 @@
 {
-  "name": "overlay-helper",
+  "name": "electron-overlay-helper",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
   "scripts": {
-    "demo": "tsc && electron dist/demo/electron-demo.js"
+    "demo": "tsc && electron dist/demo/electron-demo.js",
+    "prepare": "tsc"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/antholord/overlay-helper.git"
+    "url": "git+https://github.com/antholord/electron-overlay-helper.git"
   },
   "author": "Anthony Lord",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/antholord/overlay-helper/issues"
+    "url": "https://github.com/antholord/electron-overlay-helper/issues"
   },
-  "homepage": "https://github.com/antholord/overlay-helper#readme",
+  "homepage": "https://github.com/antholord/electron-overlay-helper#readme",
   "devDependencies": {
     "@types/lodash": "^4.14.182",
     "@typescript-eslint/eslint-plugin": "^5.30.3",

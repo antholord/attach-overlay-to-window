@@ -2,12 +2,12 @@ import { EventEmitter } from 'events';
 import { windowManager, Window } from 'node-window-manager';
 import { DebouncedFunc, throttle } from 'lodash';
 
-export type WindowWatcherOptions = {
+type WindowWatcherOptions = {
   windowName: string
   pollingInterval?: number
 }
 
-export interface IWindowWatcherClass {
+interface IWindowWatcherClass {
   on(event: 'window-active-state-changed', listener: (isActive: boolean) => void): this
   on(event: 'window-found', listener: () => void): this
   on(event: 'window-not-found', listener: () => void): this
@@ -47,7 +47,7 @@ class WindowWatcherClass extends EventEmitter implements IWindowWatcherClass {
     return this._watchedWindow
   }
 
-  private set watchedWindow(window: Window | null) {
+  set watchedWindow(window: Window | null) {
     this._watchedWindow = window;
   }
 
@@ -89,6 +89,6 @@ class WindowWatcherClass extends EventEmitter implements IWindowWatcherClass {
   }
 }
 
-export const WindowWatcher = {
+const WindowWatcher = {
   watchWindow: (options: WindowWatcherOptions) => new WindowWatcherClass(options.windowName, options.pollingInterval)
 }
