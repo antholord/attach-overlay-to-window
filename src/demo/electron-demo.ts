@@ -78,5 +78,5 @@ function createDemoWindow() {
 app.on('ready', () => {
   createDemoWindow();
   createDemoOverlay();
-  OverlayHelper.attachOverlayToWindow({ overlayWindow, parentWindowTitle: 'demo-window', notifyWhenWindowStateChanges: true });
+  OverlayHelper.attachOverlayToWindow({ overlayWindow, parentWindowTitle: 'Untitled - Notepad', notifyWhenWindowStateChanges: true });
 })

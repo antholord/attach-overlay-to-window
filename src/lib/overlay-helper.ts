@@ -38,10 +38,25 @@ export class OverlayHelper extends EventEmitter {
     if (parentWindow && overlayDesktopWindow) {
       if (overlayDesktopWindow.getOwner() !== parentWindow) {
         overlayDesktopWindow.setOwner(parentWindow);
+        if (parentWindow.id === windowManager.getActiveWindow().id) {
+          overlayDesktopWindow.show();
+        } else {
+          overlayDesktopWindow.minimize()
+        }
       }
     } else {
       console.error(`Could not find ${parentWindowTitle} or ${overlayDesktopWindow?.getTitle()}`);
     }
+
+    const scanWindowsInterval = setInterval(() => {
+      console.log(parentWindow?.getTitle())
+      // const windows = windowManager.getWindows();
+      // const parentWindow = windows.find(w => w.getTitle() == parentWindowTitle);
+      // if (!parentWindow) {
+      //   overlayWindow.hide();
+      // }
+
+    }, 500);
 
     if (notifyWhenWindowStateChanges) {
       overlayWindow.on('close', (event: Electron.Event) => {

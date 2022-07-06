@@ -2,8 +2,8 @@
   "name": "electron-overlay-helper",
   "version": "1.0.1",
   "description": "",
-  "main": "./lib/index.js",
-  "types": "./lib/index.d.ts",
+  "main": "dist/lib/index.js",
+  "types": "dist/lib/index.d.ts",
   "scripts": {
     "demo": "tsc && electron dist/demo/electron-demo.js",
     "prepare": "tsc"
